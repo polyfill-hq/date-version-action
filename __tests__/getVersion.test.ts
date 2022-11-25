@@ -8,7 +8,9 @@ import { getVersion } from '../src/getVersion';
 
 test('wait 500 ms', async () => {
   const version = await getVersion();
-  expect(version).toMatch(/^2\d\.\d{2}\.\d{2}\.\d{2}\.\d{2}\.\d{2}$/);
+  expect(version.ver).toMatch(/^2\d\.\d{2}\.\d{2}$/);
+  expect(version.build).toMatch(/^\d{6}$/);
+  expect(version.full).toBe(`${version.ver}.${version.build}`);
 });
 
 // shows how the runner will run a javascript action with env / stdout protocol

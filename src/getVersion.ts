@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import { getLastCommit } from 'git-last-commit';
 
-export function getVersion(fmt: string = 'yy.MM.dd.HH.mm.ss'): Promise<string> {
+export function getVersion(versionFormat: string = 'yy.MM.dd', buildFormat: string = 'HHmmss'): Promise<{ ver: string, build: string, full: string }> {
   return new Promise((resolve, reject) => {
     getLastCommit((err, commit) => {
       if (err) {
@@ -10,9 +10,14 @@ export function getVersion(fmt: string = 'yy.MM.dd.HH.mm.ss'): Promise<string> {
 
       const date = new Date(parseInt(commit.committedOn) * 1000);
 
-      const version = format(date, fmt);
+      const ver = format(date, versionFormat);
+      const build = format(date, buildFormat);
 
-      return resolve(version);
+      return resolve({
+        ver,
+        build,
+        full: `${ver}.${build}`,
+      });
     });
   });
 }
