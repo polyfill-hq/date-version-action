@@ -1,0 +1,81 @@
+{
+    "cSpell.allowCompoundWords": true,
+    "cSpell.language": "en,en-US",
+    "cSpell.words": [
+        "bullmq",
+        "customerio",
+        "DMMF",
+        "dwolla",
+        "ipaddr",
+        "kcors",
+        "ngrok",
+        "onboarded",
+        "serializers",
+        "sharee",
+        "twilio",
+        "twillio"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "eslint.alwaysShowStatus": true,
+    "eslint.enable": true,
+    "eslint.lintTask.enable": true,
+    "eslint.packageManager": "yarn",
+    "eslint.run": "onSave",
+    "files.exclude": {
+        "dist/": false,
+        "src/db/prisma": false,
+        "**/node_modules": false
+    },
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "path-intellisense.extensionOnImport": false,
+    "tsimporter.disabled": true,
+    "prettier.requireConfig": true,
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescriptHero.imports.disableImportRemovalOnOrganize": true,
+    "typescriptHero.imports.disableImportsSorting": true,
+    "search.exclude": {
+        "**/dist": true,
+        "**/db/prisma": true,
+        "**/node_modules": true
+    },
+    "files.watcherExclude": {
+        "**/dist": true
+    },
+    "[typescript]": {
+        "editor.formatOnSave": false
+    },
+    "[javascript]": {
+        "editor.formatOnSave": false
+    },
+    "[handlebars]": {
+        "editor.formatOnSave": false
+    },
+    "filewatcher.commands": [
+        {
+            "match": "\\.\\w+\\.env",
+            "isAsync": true,
+            "cmd": "npm run --prefix ${workspaceRoot} build:env",
+            "event": "onFileChange"
+        }
+    ],
+    "cSpell.enableFiletypes": [
+        "prisma"
+    ],
+    "typescript.referencesCodeLens.enabled": true,
+    "typescript.referencesCodeLens.showOnAllFunctions": true,
+    "sql-formatter.uppercase": true,
+    "jestRunIt.debugTestLabel": "🐞 Debug",
+    "jestRunIt.runTestLabel": "▶️ Run",
+    "jestRunIt.updateSnapshotsLabel": "💾 Update",
+    "jestRunIt.jestConfigPath": "jest.config.json",
+    "jest.autoRun": "off",
+    "jest.enableSnapshotUpdateMessages": false,
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
+    ]
+}

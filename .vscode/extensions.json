@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "streetsidesoftware.code-spell-checker",
+    "dbaeumer.vscode-eslint",
+    "vespa-dev-works.jestrunit",
+    "orta.vscode-jest",
+    "irongeek.vscode-env",
+  ]
+}
