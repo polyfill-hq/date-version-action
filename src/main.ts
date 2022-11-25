@@ -1,12 +1,16 @@
 import { exec } from 'child_process';
 
 import * as core from '@actions/core';
+import { context } from '@actions/github';
 
 import { getVersion } from './getVersion';
 
 async function run(): Promise<void> {
   try {
     const updatePackageJson = String(core.getInput('updatePackageJson')).toLowerCase() === 'true';
+
+    console.log(JSON.stringify(context));
+    core.info(JSON.stringify(context));
 
     const version = await getVersion();
     core.info(new Date().toTimeString());

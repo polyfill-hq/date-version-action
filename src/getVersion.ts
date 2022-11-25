@@ -1,4 +1,5 @@
 import * as core from '@actions/core';
+import { context } from '@actions/github';
 import { format } from 'date-fns';
 import { Commit, getLastCommit } from 'git-last-commit';
 
@@ -16,8 +17,6 @@ function getCommit():Promise<Commit> {
 
 export async function getVersion(versionFormat: string = 'yy.MM.dd', buildFormat: string = 'HHmmss') {
   const commit = await getCommit();
-
-  core.info('getting latest commit ...'); // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
 
   core.info(JSON.stringify(commit));
 
