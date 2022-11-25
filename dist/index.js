@@ -56,8 +56,8 @@ function getCommit() {
 function getVersion(versionFormat = 'yy.MM.dd', buildFormat = 'HHmmss') {
     return __awaiter(this, void 0, void 0, function* () {
         const commit = yield getCommit();
-        core.debug('getting latest commit ...'); // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
-        core.debug(JSON.stringify(commit));
+        core.info('getting latest commit ...'); // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+        core.info(JSON.stringify(commit));
         const date = new Date(parseInt(commit.committedOn) * 1000);
         const ver = (0, date_fns_1.format)(date, versionFormat);
         const build = (0, date_fns_1.format)(date, buildFormat);
@@ -121,7 +121,7 @@ function run() {
         try {
             const updatePackageJson = String(core.getInput('updatePackageJson')).toLowerCase() === 'true';
             const version = yield (0, getVersion_1.getVersion)();
-            core.debug(new Date().toTimeString());
+            core.info(new Date().toTimeString());
             core.setOutput('version', version.ver);
             core.setOutput('build', version.build);
             core.setOutput('full_version', version.full);
@@ -142,8 +142,12 @@ function run() {
             }
         }
         catch (error) {
-            if (error instanceof Error)
+            if (error instanceof Error) {
                 core.setFailed(error.message);
+            }
+            else {
+                core.setFailed(error);
+            }
         }
     });
 }
