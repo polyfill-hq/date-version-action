@@ -6,29 +6,6 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -40,32 +17,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getVersion = void 0;
-const core = __importStar(__nccwpck_require__(2186));
 const date_fns_1 = __nccwpck_require__(3314);
-const git_last_commit_1 = __nccwpck_require__(3951);
-function getCommit() {
-    return new Promise((resolve, reject) => {
-        (0, git_last_commit_1.getLastCommit)((err, commit) => {
-            if (err) {
-                return reject(err);
-            }
-            return resolve(commit);
-        });
-    });
-}
-function getVersion(versionFormat = 'yy.MM.dd', buildFormat = 'HHmmss') {
+function getVersion(timeStamp, versionFormat = 'yy.MM.dd', buildFormat = 'HHmmss') {
     return __awaiter(this, void 0, void 0, function* () {
-        const commit = yield getCommit();
-        core.info(JSON.stringify(commit));
-        const date = new Date(parseInt(commit.committedOn) * 1000);
-        const ver = (0, date_fns_1.format)(date, versionFormat);
-        const build = (0, date_fns_1.format)(date, buildFormat);
+        // const commit = await getCommit();
+        // core.info(JSON.stringify(commit));
+        // const date = new Date(parseInt(commit.committedOn) * 1000);
+        console.log('Commit timestamp: ', timeStamp);
+        const ver = (0, date_fns_1.format)(timeStamp, versionFormat);
+        const build = (0, date_fns_1.format)(timeStamp, buildFormat);
         return {
             ver,
             build,
             full: `${ver}.${build}`,
-            shortHash: commit.shortHash,
-            branch: commit.branch,
         };
     });
 }
@@ -120,15 +84,15 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const updatePackageJson = String(core.getInput('updatePackageJson')).toLowerCase() === 'true';
-            console.log(JSON.stringify(github_1.context));
             core.info(JSON.stringify(github_1.context));
-            const version = yield (0, getVersion_1.getVersion)();
+            const timeStamp = github_1.context.payload.head_commit.timestamp;
+            const version = yield (0, getVersion_1.getVersion)(new Date(timeStamp));
             core.info(new Date().toTimeString());
             core.setOutput('version', version.ver);
             core.setOutput('build', version.build);
             core.setOutput('full_version', version.full);
-            core.setOutput('short_hash', version.shortHash);
-            core.setOutput('branch', version.branch);
+            // core.setOutput('short_hash', version.shortHash);
+            // core.setOutput('branch', version.branch);
             if (updatePackageJson) {
                 (0, child_process_1.exec)(`npm version --no-git-tag-version ${version.ver}-${version.build}`, (error, stdout, stderr) => {
                     if (error) {
@@ -29376,87 +29340,6 @@ class Deprecation extends Error {
 }
 
 exports.Deprecation = Deprecation;
-
-
-/***/ }),
-
-/***/ 3951:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const process = __nccwpck_require__(2081),
-  splitCharacter = '<##>'
-
-const executeCommand = (command, options, callback) => {
-  let dst = __dirname
-
-  if(!!options && options.dst) {
-    dst = options.dst
-  }
-
-  process.exec(command, {cwd: dst}, function(err, stdout, stderr) {
-    if (stdout === '') {
-      callback('this does not look like a git repo')
-      return
-    }
-
-    if (stderr) {
-      callback(stderr)
-      return
-    }
-
-    callback(null, stdout)
-  })
-}
-
-const prettyFormat = ["%h", "%H", "%s", "%f", "%b", "%at", "%ct", "%an", "%ae", "%cn", "%ce", "%N", ""]
-
-const getCommandString = splitCharacter =>
-  'git log -1 --pretty=format:"' + prettyFormat.join(splitCharacter) +'"' +
-    ' && git rev-parse --abbrev-ref HEAD' +
-    ' && git tag --contains HEAD'
-
-const getLastCommit = (callback, options) => {
-  const command = getCommandString(splitCharacter)
-
-  executeCommand(command, options, function(err, res) {
-    if (err) {
-      callback(err)
-      return
-    }
-
-    var a = res.split(splitCharacter)
-
-    // e.g. master\n or master\nv1.1\n or master\nv1.1\nv1.2\n
-    var branchAndTags = a[a.length-1].split('\n').filter(n => n)
-    var branch = branchAndTags[0]
-    var tags = branchAndTags.slice(1)
-
-    callback(null, {
-      shortHash: a[0],
-      hash: a[1],
-      subject: a[2],
-      sanitizedSubject: a[3],
-      body: a[4],
-      authoredOn: a[5],
-      committedOn: a[6],
-      author: {
-        name: a[7],
-        email: a[8],
-      },
-      committer: {
-        name: a[9],
-        email: a[10]
-      },
-      notes: a[11],
-      branch,
-      tags
-    })
-  })
-}
-
-module.exports = {
-  getLastCommit
-}
 
 
 /***/ }),

@@ -8,18 +8,16 @@ import { getVersion } from './getVersion';
 async function run(): Promise<void> {
   try {
     const updatePackageJson = String(core.getInput('updatePackageJson')).toLowerCase() === 'true';
-
-    console.log(JSON.stringify(context));
     core.info(JSON.stringify(context));
-
-    const version = await getVersion();
+    const timeStamp : string = context.payload.head_commit.timestamp;
+    const version = await getVersion(new Date(timeStamp));
     core.info(new Date().toTimeString());
 
     core.setOutput('version', version.ver);
     core.setOutput('build', version.build);
     core.setOutput('full_version', version.full);
-    core.setOutput('short_hash', version.shortHash);
-    core.setOutput('branch', version.branch);
+    // core.setOutput('short_hash', version.shortHash);
+    // core.setOutput('branch', version.branch);
 
     if (updatePackageJson) {
       exec(`npm version --no-git-tag-version ${version.ver}-${version.build}`, (error, stdout, stderr) => {

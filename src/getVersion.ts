@@ -1,35 +1,19 @@
-import * as core from '@actions/core';
-import { context } from '@actions/github';
 import { format } from 'date-fns';
-import { Commit, getLastCommit } from 'git-last-commit';
 
-function getCommit():Promise<Commit> {
-  return new Promise((resolve, reject) => {
-    getLastCommit((err, commit) => {
-      if (err) {
-        return reject(err);
-      }
+export async function getVersion(timeStamp: Date, versionFormat: string = 'yy.MM.dd', buildFormat: string = 'HHmmss') {
+  // const commit = await getCommit();
 
-      return resolve(commit);
-    });
-  });
-}
+  // core.info(JSON.stringify(commit));
 
-export async function getVersion(versionFormat: string = 'yy.MM.dd', buildFormat: string = 'HHmmss') {
-  const commit = await getCommit();
+  // const date = new Date(parseInt(commit.committedOn) * 1000);
 
-  core.info(JSON.stringify(commit));
-
-  const date = new Date(parseInt(commit.committedOn) * 1000);
-
-  const ver = format(date, versionFormat);
-  const build = format(date, buildFormat);
+  console.log('Commit timestamp: ', timeStamp);
+  const ver = format(timeStamp, versionFormat);
+  const build = format(timeStamp, buildFormat);
 
   return {
     ver,
     build,
     full: `${ver}.${build}`,
-    shortHash: commit.shortHash,
-    branch: commit.branch,
   };
 }
