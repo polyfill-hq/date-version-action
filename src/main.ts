@@ -4,14 +4,14 @@ import { getVersion } from './getVersion';
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds');
-    core.debug(`Waiting ${ms} milliseconds ...`); // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
-
-    core.debug(new Date().toTimeString());
     const version = await getVersion();
     core.debug(new Date().toTimeString());
 
-    core.setOutput('version', version);
+    core.setOutput('version', version.ver);
+    core.setOutput('build', version.build);
+    core.setOutput('full_version', version.full);
+    core.setOutput('short_hash', version.shortHash);
+    core.setOutput('branch', version.branch);
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message);
   }

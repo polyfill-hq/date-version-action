@@ -1,23 +1,36 @@
+import * as core from '@actions/core';
 import { format } from 'date-fns';
-import { getLastCommit } from 'git-last-commit';
+import { Commit, getLastCommit } from 'git-last-commit';
 
-export function getVersion(versionFormat: string = 'yy.MM.dd', buildFormat: string = 'HHmmss'): Promise<{ ver: string, build: string, full: string }> {
+function getCommit():Promise<Commit> {
   return new Promise((resolve, reject) => {
     getLastCommit((err, commit) => {
       if (err) {
         return reject(err);
       }
 
-      const date = new Date(parseInt(commit.committedOn) * 1000);
-
-      const ver = format(date, versionFormat);
-      const build = format(date, buildFormat);
-
-      return resolve({
-        ver,
-        build,
-        full: `${ver}.${build}`,
-      });
+      return resolve(commit);
     });
   });
+}
+
+export async function getVersion(versionFormat: string = 'yy.MM.dd', buildFormat: string = 'HHmmss') {
+  const commit = await getCommit();
+
+  core.debug('getting latest commit ...'); // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+
+  core.debug(JSON.stringify(commit));
+
+  const date = new Date(parseInt(commit.committedOn) * 1000);
+
+  const ver = format(date, versionFormat);
+  const build = format(date, buildFormat);
+
+  return {
+    ver,
+    build,
+    full: `${ver}.${build}`,
+    shortHash: commit.shortHash,
+    branch: commit.branch,
+  };
 }
