@@ -9,7 +9,7 @@ async function run(): Promise<void> {
     const updatePackageJson = String(core.getInput('updatePackageJson')).toLowerCase() === 'true';
 
     const version = await getVersion();
-    core.debug(new Date().toTimeString());
+    core.info(new Date().toTimeString());
 
     core.setOutput('version', version.ver);
     core.setOutput('build', version.build);
@@ -31,7 +31,11 @@ async function run(): Promise<void> {
       });
     }
   } catch (error) {
-    if (error instanceof Error) core.setFailed(error.message);
+    if (error instanceof Error) {
+      core.setFailed(error.message);
+    } else {
+      core.setFailed(error as any);
+    }
   }
 }
 

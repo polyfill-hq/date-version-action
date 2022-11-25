@@ -17,9 +17,9 @@ function getCommit():Promise<Commit> {
 export async function getVersion(versionFormat: string = 'yy.MM.dd', buildFormat: string = 'HHmmss') {
   const commit = await getCommit();
 
-  core.debug('getting latest commit ...'); // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+  core.info('getting latest commit ...'); // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
 
-  core.debug(JSON.stringify(commit));
+  core.info(JSON.stringify(commit));
 
   const date = new Date(parseInt(commit.committedOn) * 1000);
 
