@@ -1,15 +1,12 @@
 import { format } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 
-export async function getVersion(timeStamp: Date, versionFormat: string = 'yy.MM.dd', buildFormat: string = 'HHmmss') {
-  // const commit = await getCommit();
+export async function getVersion(timeStamp: string, versionFormat: string = 'yy.MM.dd', buildFormat: string = 'HHmmss') {
+  const pst = utcToZonedTime(timeStamp, 'America/Vancouver');
 
-  // core.info(JSON.stringify(commit));
-
-  // const date = new Date(parseInt(commit.committedOn) * 1000);
-
-  console.log('Commit timestamp: ', timeStamp);
-  const ver = format(timeStamp, versionFormat);
-  const build = format(timeStamp, buildFormat);
+  console.log('Commit timestamp: ', pst);
+  const ver = format(pst, versionFormat);
+  const build = format(pst, buildFormat);
 
   return {
     ver,

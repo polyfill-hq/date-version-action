@@ -10,12 +10,13 @@ async function run(): Promise<void> {
     const updatePackageJson = String(core.getInput('updatePackageJson')).toLowerCase() === 'true';
     core.info(JSON.stringify(context));
     const timeStamp : string = context.payload.head_commit.timestamp;
-    const version = await getVersion(new Date(timeStamp));
-    core.info(new Date().toTimeString());
+    const version = await getVersion(timeStamp);
+    core.info(`Version: ${version}`);
 
     core.setOutput('version', version.ver);
     core.setOutput('build', version.build);
     core.setOutput('full_version', version.full);
+
     // core.setOutput('short_hash', version.shortHash);
     // core.setOutput('branch', version.branch);
 
