@@ -55,14 +55,6 @@
     "[handlebars]": {
         "editor.formatOnSave": false
     },
-    "filewatcher.commands": [
-        {
-            "match": "\\.\\w+\\.env",
-            "isAsync": true,
-            "cmd": "npm run --prefix ${workspaceRoot} build:env",
-            "event": "onFileChange"
-        }
-    ],
     "cSpell.enableFiletypes": [
         "prisma"
     ],
